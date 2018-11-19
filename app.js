@@ -1,13 +1,16 @@
-var express     = require("express"),
-    app         = express(),
-    bodyParser  = require("body-parser"),
-    mongoose    = require("mongoose"),
+var express         = require("express"),
+    app             = express(),
+    bodyParser      = require("body-parser"),
+    mongoose        = require("mongoose"),
+    passport        = require("passport"),
+    localStrategy   =require("passport-local"),
     // Use campground schema from /models/campground.js file 
-    Campground  = require("./models/campground"),
+    Campground      = require("./models/campground"),
     // Use comment schema from /models/comment.js file
-    Comment     = require("./models/comment"),
+    Comment         = require("./models/comment"),
     // Will clear every data and create new data from DB. (error driven code)
-    seedDB      = require("./seeds");
+    User            =require("./models/user"),
+    seedDB          = require("./seeds");
 
 // remove data from db
 seedDB();
