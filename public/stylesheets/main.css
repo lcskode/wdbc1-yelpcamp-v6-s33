@@ -1,0 +1,13 @@
+/* All image inside thumbnail should have 100% width */
+.thumbnail img {
+  width: 100%;
+}
+
+/* removes extra space between thumbnail and image */
+.thumbnail {
+  padding: 0;
+}
+
+.thumbnail .caption-full {
+  padding: 9px; 
+}
