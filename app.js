@@ -172,11 +172,11 @@ app.post("/campgrounds/:id/comments", function(req, res){
 // AUTH ROUTES
 // ============================================================================
 
+// REGISTER ROUTES
 // show user register form
 app.get("/register", function(req, res){
   res.render("register");
 });
-
 // handle user register logic from register form
 app.post("/register", function(req, res){
   var newUser = new User({username: req.body.username});
@@ -191,6 +191,23 @@ app.post("/register", function(req, res){
     });
   });
 });
+
+// LOGIN ROUTES
+// show user login form
+app.get("/login", function(req, res){
+  res.render("login");
+});
+// handle user login logic from login form
+// PATTERN --->  app.post("/login", middleware, callback)
+app.post("/login", passport.authenticate("local", {
+  successRedirect: "/campgrounds",
+  failureRedirect: "/login"
+}), function(req, res){
+
+});
+
+
+
 
 
 

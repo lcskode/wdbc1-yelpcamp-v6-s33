@@ -1,3 +1,8 @@
+#### S33-L292 YelpCamp V6.3
+**Login**
+* Add login routes  
+* Add login template  
+
 #### S33-L291 YelpCamp V6.2
 **Register**
 * Configure passport  
