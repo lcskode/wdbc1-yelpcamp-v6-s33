@@ -1,11 +1,16 @@
+#### S33-L291 YelpCamp V6.2
+**Register**
+* Configure passport  
+* Add register routes  
+* Add register templates  
+
 #### S33-L290 YelpCamp V6.1
 **Add User Model**
 * Install all npm packages needed for auth  
   * passport  
   * passport-local  
   * passport-local-mongoose  
-  * express-session  
-  
+  * express-session    
 * Define User Model  
 
 #### S31-L282 YelpCamp V5

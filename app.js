@@ -12,52 +12,52 @@ var express         = require("express"),
     User            =require("./models/user"),
     seedDB          = require("./seeds");
 
-// remove data from db
-seedDB();
 
-// use yelp_camp db if exists, if not, it will create yelp_camp db.
-mongoose.connect("mongodb://localhost/yelp_camp");
+
+// ============================================================================
+// APP CONFIG
+// ============================================================================
 
 // use mLab db instead of local mongodb
 // mongoose.connect("mongodb://admin:admin123@ds149144.mlab.com:49144/wdbc1_yelp_camp"); 
 
-// 
-app.set("view engine", "ejs");
-app.use(express.static(__dirname + "/public"));
-// console.log(__dirname);
-// set body parser
+// use yelp_camp db if exists, if not, it will create yelp_camp db.
+mongoose.connect("mongodb://localhost/yelp_camp");
+// use body parser
 app.use(bodyParser.urlencoded({extended: true}));
+// set ejs to render ejs files
+app.set("view engine", "ejs");
+// use public directory with absolute path
+app.use(express.static(__dirname + "/public"));
+// remove and create new data from db
+seedDB();
 
 
-// use campground schema
-// var Campground = require("./models/campground");
 
-// TEST db, add one data
-// Campground.create(
-//   {
-//     name: "Mountain Goat's Rest",
-//     image: "https://cdn.pixabay.com/photo/2015/07/10/17/24/night-839807_1280.jpg",
-//     description: "This is a huge granite hill. No bathrooms, no water. Beautiful granite!"
-//   }, function(err, campground){
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       console.log("NEWLY CREATED CAMPGROUND: ");
-//       console.log(campground);
-//     }
-//   });
+// ============================================================================
+// PASSPORT CONFIG
+// ============================================================================
 
-// dummy data for campgrounds
-// var campgrounds = [
-//   {name: "Salmon Creek", image: "https://cdn.pixabay.com/photo/2016/02/18/22/16/tent-1208201_1280.jpg"},
-//   {name: "Granite Hill", image: "https://cdn.pixabay.com/photo/2016/01/19/16/48/teepee-1149402_1280.jpg"},
-//   {name: "Mountain Goat's Rest", image: "https://cdn.pixabay.com/photo/2015/07/10/17/24/night-839807_1280.jpg"},
-//   {name: "Salmon Creek", image: "https://cdn.pixabay.com/photo/2016/02/18/22/16/tent-1208201_1280.jpg"},
-//   {name: "Granite Hill", image: "https://cdn.pixabay.com/photo/2016/01/19/16/48/teepee-1149402_1280.jpg"},
-//   {name: "Mountain Goat's Rest", image: "https://cdn.pixabay.com/photo/2015/07/10/17/24/night-839807_1280.jpg"}
-// ];
+// tell app to use express-session
+app.use(require("express-session")({
+  secret: "Once again this is another part of auth",
+  resave: false,
+  saveUninitialized: false
+}));
 
- 
+// tell the app to use passport to initialize session
+app.use(passport.initialize());
+app.use(passport.session());
+
+// create new local strategy using user.authenticate method during login coming from passport-local-mongoose
+passport.use(new localStrategy(User.authenticate()));
+// reading session and encoding it and put it back in the session
+passport.serializeUser(User.serializeUser());
+// reading session and un-encoding it
+passport.deserializeUser(User.deserializeUser());
+
+
+
 // ============================================================================
 // CAMPGROUND ROUTES
 // ============================================================================
@@ -141,6 +141,7 @@ app.get("/campgrounds/:id/comments/new", function(req, res){
 
 });
 
+// handle add comment
 app.post("/campgrounds/:id/comments", function(req, res){
   // lookup campground using ID
   Campground.findById(req.params.id, function(err, campground){
@@ -161,15 +162,36 @@ app.post("/campgrounds/:id/comments", function(req, res){
           res.redirect("/campgrounds/" + campground._id);
         }
       });
-
-      // console.log(req.body.comment);
     }
   });
-  
-  // connect new  comment to campground
-  // redirect to campground show page
-
 });
+
+
+
+// ============================================================================
+// AUTH ROUTES
+// ============================================================================
+
+// show user register form
+app.get("/register", function(req, res){
+  res.render("register");
+});
+
+// handle user register logic from register form
+app.post("/register", function(req, res){
+  var newUser = new User({username: req.body.username});
+  User.register(newUser, req.body.password, function(err, user){
+    if(err){
+      console.log(err);
+      return res.render("register");
+    }
+    // no need for else statement because return is used
+    passport.authenticate("local")(req, res, function(){
+      res.redirect("/campgrounds");
+    });
+  });
+});
+
 
 
 // ============================================================================
