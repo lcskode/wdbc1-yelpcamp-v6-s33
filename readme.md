@@ -1,9 +1,12 @@
+#### S33-L294 YelpCamp V6.5  
+**Show/Hide Links**  
+* Show/Hide auth links correctly  
+
 #### S33-L293 YelpCamp V6.4
-**Logout / Navbar**
+**Logout / Navbar**  
 * Add logout route  
 * Prevent user from adding a comment if not signed in  
 * Add links to navbar  
-* Show/Hide auth links correctly    
 
 #### S33-L292 YelpCamp V6.3
 **Login**

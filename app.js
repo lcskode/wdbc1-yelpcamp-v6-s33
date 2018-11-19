@@ -56,7 +56,12 @@ passport.serializeUser(User.serializeUser());
 // reading session and un-encoding it
 passport.deserializeUser(User.deserializeUser());
 
-
+// middleware, pass req.user to each and every route, this will be called to every route
+// this will check if there is currentUser login or none
+app.use(function(req, res, next){
+  res.locals.currentUser = req.user;
+  next();
+});
 
 // ============================================================================
 // CAMPGROUND ROUTES
@@ -69,14 +74,12 @@ app.get("/", function(req, res){
 
 // list all campgrounds
 app.get("/campgrounds", function(req, res){
-  // pass campgrounds data to list all campgrounds on campgrounds.ejs
-  // res.render("campgrounds", {campgrounds: campgrounds});
-
   // Get all campgrounds from db
   Campground.find({}, function(err, allCampgrounds){
     if (err) {
       console.log(err);
     } else {
+      // display all campgrounds and get currentUser if any
       res.render("campgrounds/index", {campgrounds: allCampgrounds});
     }
   });
